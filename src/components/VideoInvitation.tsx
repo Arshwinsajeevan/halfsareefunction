@@ -67,14 +67,21 @@ export default function VideoInvitation({
   onReplay,
 }: VideoInvitationProps) {
   const [isAutoGlide, setIsAutoGlide] = useState(true);
+  const [isVideoMode, setIsVideoMode] = useState(false);
   const autoGlideRef = useRef(true);
   const rafRef = useRef<number>(0);
+
+  useEffect(() => {
+    setIsVideoMode(
+      new URLSearchParams(window.location.search).get("video") === "1"
+    );
+  }, []);
 
   useEffect(() => {
     autoGlideRef.current = isAutoGlide;
   }, [isAutoGlide]);
 
-  const startGlideLoop = () => {
+  const startGlideLoop = (videoMode = false) => {
     if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
     let lastTime = 0;
     let virtualY = window.scrollY;
@@ -93,8 +100,9 @@ export default function VideoInvitation({
         return;
       }
 
-      // Accumulate sub-pixel scroll smoothly without browser smooth-scroll fighting
-      virtualY = Math.min(maxScroll, virtualY + 38 * dt);
+      // In video mode, pace the scroll over ~20s so total video hits ~30s cleanly
+      const speedPxPerSec = videoMode ? Math.max(38, maxScroll / 20.0) : 38;
+      virtualY = Math.min(maxScroll, virtualY + speedPxPerSec * dt);
       window.scrollTo({ top: virtualY, behavior: "instant" as ScrollBehavior });
       rafRef.current = window.requestAnimationFrame(step);
     };
@@ -105,6 +113,8 @@ export default function VideoInvitation({
   // Smooth video-like auto-glide that yields instantly when the user touches or scrolls
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    const videoParam =
+      new URLSearchParams(window.location.search).get("video") === "1";
 
     let startTimer = 0;
 
@@ -123,10 +133,10 @@ export default function VideoInvitation({
     window.addEventListener("wheel", stopOnUserInteraction, { passive: true });
     window.addEventListener("pointerdown", stopOnUserInteraction, { passive: true });
 
-    // Start smooth auto-glide 4.5s after card opens (2s after the 2.5s text reveal finishes)
+    // Start smooth auto-glide 4.5s after card opens (small pause to read Card 1 from top)
     startTimer = window.setTimeout(() => {
       if (autoGlideRef.current) {
-        startGlideLoop();
+        startGlideLoop(videoParam);
       }
     }, 4500);
 
@@ -190,57 +200,63 @@ export default function VideoInvitation({
       </div>
 
       {/* Floating Glass Control Bar */}
-      <div
-        className="fixed bottom-4 right-4 z-40 flex items-center gap-1.5 rounded-full border border-[#E8C97A]/35 bg-[#46131E]/82 backdrop-blur-md px-2.5 py-1.5 shadow-[0_10px_30px_rgba(0,0,0,0.35)]"
-        onPointerDown={(e) => e.stopPropagation()}
-        onTouchStart={(e) => e.stopPropagation()}
-      >
-        <button
-          type="button"
-          onClick={toggleAutoGlide}
-          aria-label={isAutoGlide ? "Pause auto scroll" : "Play auto scroll"}
-          className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium text-[#F6E3A8] hover:bg-white/10 transition-colors cursor-pointer"
+      {!isVideoMode && (
+        <div
+          className="fixed bottom-4 right-4 z-40 flex items-center gap-1.5 rounded-full border border-[#E8C97A]/35 bg-[#46131E]/82 backdrop-blur-md px-2.5 py-1.5 shadow-[0_10px_30px_rgba(0,0,0,0.35)]"
+          onPointerDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
         >
-          {isAutoGlide ? (
-            <>
-              <Pause className="w-3.5 h-3.5" />
-              <span>Playing</span>
-            </>
-          ) : (
-            <>
-              <Play className="w-3.5 h-3.5" />
-              <span>Auto-Play</span>
-            </>
-          )}
-        </button>
+          <button
+            type="button"
+            onClick={toggleAutoGlide}
+            aria-label={isAutoGlide ? "Pause auto scroll" : "Play auto scroll"}
+            className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium text-[#F6E3A8] hover:bg-white/10 transition-colors cursor-pointer"
+          >
+            {isAutoGlide ? (
+              <>
+                <Pause className="w-3.5 h-3.5" />
+                <span>Playing</span>
+              </>
+            ) : (
+              <>
+                <Play className="w-3.5 h-3.5" />
+                <span>Auto-Play</span>
+              </>
+            )}
+          </button>
 
-        <span className="h-3.5 w-px bg-[#E8C97A]/25" />
+          <span className="h-3.5 w-px bg-[#E8C97A]/25" />
 
-        <button
-          type="button"
-          onClick={onToggleMute}
-          aria-label={isMuted ? "Unmute music" : "Mute music"}
-          className="p-1.5 rounded-full text-[#F6E3A8] hover:bg-white/10 transition-colors cursor-pointer"
-        >
-          {isMuted ? (
-            <VolumeX className="w-4 h-4" />
-          ) : (
-            <Volume2 className="w-4 h-4" />
-          )}
-        </button>
+          <button
+            type="button"
+            onClick={onToggleMute}
+            aria-label={isMuted ? "Unmute music" : "Mute music"}
+            className="p-1.5 rounded-full text-[#F6E3A8] hover:bg-white/10 transition-colors cursor-pointer"
+          >
+            {isMuted ? (
+              <VolumeX className="w-4 h-4" />
+            ) : (
+              <Volume2 className="w-4 h-4" />
+            )}
+          </button>
 
-        <button
-          type="button"
-          onClick={onReplay}
-          aria-label="Replay envelope opening"
-          className="p-1.5 rounded-full text-[#F6E3A8] hover:bg-white/10 transition-colors cursor-pointer"
-        >
-          <RotateCcw className="w-3.5 h-3.5" />
-        </button>
-      </div>
+          <button
+            type="button"
+            onClick={onReplay}
+            aria-label="Replay envelope opening"
+            className="p-1.5 rounded-full text-[#F6E3A8] hover:bg-white/10 transition-colors cursor-pointer"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Main Centered Mobile-First Editorial Column */}
-      <main className="relative mx-auto w-full max-w-[460px] px-4 pt-6 pb-24 space-y-8 sm:space-y-10">
+      <main
+        className={`relative mx-auto w-full max-w-[460px] px-4 pt-6 space-y-8 sm:space-y-10 ${
+          isVideoMode ? "pb-10" : "pb-24"
+        }`}
+      >
         {/* ================================================================
             SCENE 1: MAIN INVITATION DETAILS (Recreated cleanly from Image 1)
            ================================================================ */}
@@ -360,9 +376,11 @@ export default function VideoInvitation({
                 2026 &bull; 7:00 PM Onwards
               </p>
 
-              <div className="mt-4">
-                <CountdownTimer />
-              </div>
+              {!isVideoMode && (
+                <div className="mt-4">
+                  <CountdownTimer />
+                </div>
+              )}
             </motion.div>
 
             <FloralDivider />
@@ -508,75 +526,78 @@ export default function VideoInvitation({
               </span>
             </motion.div>
 
-            {/* 1-Tap Navigation & Calendar Buttons */}
-            <div className="mt-6 flex flex-col gap-2.5">
-              <a
-                href={MAP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#6B1C2D] via-[#802337] to-[#6B1C2D] text-[#FCF8F2] py-3 px-5 text-sm font-semibold tracking-wide shadow-[0_10px_24px_rgba(90,14,30,0.25)] hover:brightness-110 active:scale-[0.99] transition-all"
-              >
-                <MapPin className="w-4 h-4 text-[#E8C97A]" />
-                <span>Open Venue in Google Maps</span>
-              </a>
+            {/* 1-Tap Navigation & Calendar Buttons (hidden in video recording mode) */}
+            {!isVideoMode && (
+              <div className="mt-6 flex flex-col gap-2.5">
+                <a
+                  href={MAP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#6B1C2D] via-[#802337] to-[#6B1C2D] text-[#FCF8F2] py-3 px-5 text-sm font-semibold tracking-wide shadow-[0_10px_24px_rgba(90,14,30,0.25)] hover:brightness-110 active:scale-[0.99] transition-all"
+                >
+                  <MapPin className="w-4 h-4 text-[#E8C97A]" />
+                  <span>Open Venue in Google Maps</span>
+                </a>
 
-              <a
-                href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Aarna%27s+Half+Saree+Ceremony&dates=20261206T133000Z/20261206T173000Z&details=With+Love+%26+Blessings+of+the+Family.+Eventara+Convention%2C+Hyderabad.&location=Eventara+Convention%2C+Near+Neopolis%2C+Vattinagulapally%2C+Hyderabad"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-[#7C2939]/30 bg-white/80 py-2.5 px-4 text-xs font-semibold text-[#5E1B29] hover:bg-white transition-colors"
-              >
-                <Calendar className="w-3.5 h-3.5 text-[#9A6826]" />
-                <span>Save Date to Calendar</span>
-              </a>
-            </div>
+                <a
+                  href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Aarna%27s+Half+Saree+Ceremony&dates=20261206T133000Z/20261206T173000Z&details=With+Love+%26+Blessings+of+the+Family.+Eventara+Convention%2C+Hyderabad.&location=Eventara+Convention%2C+Near+Neopolis%2C+Vattinagulapally%2C+Hyderabad"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-[#7C2939]/30 bg-white/80 py-2.5 px-4 text-xs font-semibold text-[#5E1B29] hover:bg-white transition-colors"
+                >
+                  <Calendar className="w-3.5 h-3.5 text-[#9A6826]" />
+                  <span>Save Date to Calendar</span>
+                </a>
+              </div>
+            )}
           </div>
         </motion.section>
 
         {/* ================================================================
             SCENE 4: ALL ARE WELCOME & FOOTER (Softened Burgundy Card)
            ================================================================ */}
-        <motion.section
-          initial={{ opacity: 0, y: 22 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.65, ease: EASE_CINEMATIC }}
-          className="relative rounded-[26px] border border-[#E8C97A]/35 bg-[linear-gradient(160deg,rgba(104,36,50,0.96)_0%,rgba(84,26,38,0.97)_100%)] px-6 py-8 text-center shadow-[0_20px_50px_rgba(32,5,11,0.38)] will-change-transform"
-        >
-          <p className="text-[11px] uppercase tracking-[0.26em] text-[#F3D992] font-medium">
-            With Warmth &amp; Gratitude
-          </p>
-          <h3 className="font-script-calligraphy font-normal text-[38px] sm:text-[42px] leading-tight text-[#FCF8F2] mt-2 tracking-wide">
-            All Are Welcome
-          </h3>
-          <FloralDivider light />
-          <p className="font-serif-editorial text-[16px] sm:text-[17px] leading-relaxed text-[#F7ECEE]/95 max-w-sm mx-auto">
-            Your presence, love, and heartfelt blessings will make Aarna&apos;s
-            Half Saree Ceremony truly unforgettable. We eagerly look forward to
-            celebrating with all our family.
-          </p>
+        {!isVideoMode && (
+          <motion.section
+            initial={{ opacity: 0, y: 22 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.65, ease: EASE_CINEMATIC }}
+            className="relative rounded-[26px] border border-[#E8C97A]/35 bg-[linear-gradient(160deg,rgba(104,36,50,0.96)_0%,rgba(84,26,38,0.97)_100%)] px-6 sm:px-8 py-8 text-center shadow-[0_20px_50px_rgba(32,5,11,0.38)] will-change-transform"
+          >
+            <p className="text-[11px] uppercase tracking-[0.26em] text-[#F3D992] font-medium">
+              With Warmth &amp; Gratitude
+            </p>
+            <h3 className="font-script-calligraphy font-normal text-[38px] sm:text-[42px] leading-tight text-[#FCF8F2] mt-2 tracking-wide">
+              All Are Welcome
+            </h3>
+            <FloralDivider light />
+            <p className="font-serif-editorial text-[16px] sm:text-[17px] leading-relaxed text-[#F7ECEE]/95 max-w-[300px] sm:max-w-[330px] mx-auto text-balance">
+              Your presence, love, and heartfelt blessings will make
+              Aarna&apos;s Half Saree Ceremony truly unforgettable.
+            </p>
 
-          <div className="mt-6 pt-5 border-t border-[#E8C97A]/20 flex flex-col items-center gap-3">
-            <button
-              type="button"
-              onClick={onReplay}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#E8C97A]/40 bg-[#5C1A28]/70 px-4 py-1.5 text-xs font-medium text-[#F6E3A8] hover:bg-[#6E2031] transition-colors cursor-pointer"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Replay Invitation</span>
-            </button>
+            <div className="mt-6 pt-5 border-t border-[#E8C97A]/20 flex flex-col items-center gap-3">
+              <button
+                type="button"
+                onClick={onReplay}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#E8C97A]/40 bg-[#5C1A28]/70 px-4 py-1.5 text-xs font-medium text-[#F6E3A8] hover:bg-[#6E2031] transition-colors cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Replay Invitation</span>
+              </button>
 
-            <a
-              href="https://www.inviteus.in/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[11px] tracking-[0.12em] text-[#F2DCE0]/75 hover:text-[#F3D992] transition-colors"
-            >
-              Crafted with ♥ by{" "}
-              <span className="underline underline-offset-2">InviteUs</span>
-            </a>
-          </div>
-        </motion.section>
+              <a
+                href="https://www.inviteus.in/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] tracking-[0.12em] text-[#F2DCE0]/75 hover:text-[#F3D992] transition-colors"
+              >
+                Crafted with ♥ by{" "}
+                <span className="underline underline-offset-2">InviteUs</span>
+              </a>
+            </div>
+          </motion.section>
+        )}
       </main>
     </motion.div>
   );

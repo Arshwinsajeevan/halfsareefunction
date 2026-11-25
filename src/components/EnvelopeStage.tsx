@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface EnvelopeStageProps {
@@ -15,6 +15,13 @@ export default function EnvelopeStage({
   onStartAudio,
 }: EnvelopeStageProps) {
   const [isOpening, setIsOpening] = useState(false);
+  const [isVideoMode, setIsVideoMode] = useState(false);
+
+  useEffect(() => {
+    setIsVideoMode(
+      new URLSearchParams(window.location.search).get("video") === "1"
+    );
+  }, []);
 
   const handleOpen = () => {
     if (isOpening) return;
@@ -271,27 +278,29 @@ export default function EnvelopeStage({
         </div>
       </motion.button>
 
-      {/* Tap to Open Prompt */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: isOpening ? 0 : 1, y: isOpening ? 10 : 0 }}
-        transition={{ delay: 0.25, duration: 0.7, ease: EASE_CINEMATIC }}
-        className="relative z-10 mt-8 sm:mt-10 text-center"
-      >
-        <button
-          type="button"
-          onClick={handleOpen}
-          className="inline-flex flex-col items-center cursor-pointer focus:outline-none"
+      {/* Tap to Open Prompt (hidden in video recording mode) */}
+      {!isVideoMode && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: isOpening ? 0 : 1, y: isOpening ? 10 : 0 }}
+          transition={{ delay: 0.25, duration: 0.7, ease: EASE_CINEMATIC }}
+          className="relative z-10 mt-8 sm:mt-10 text-center"
         >
-          <motion.span
-            animate={{ opacity: [0.7, 1, 0.7] }}
-            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-            className="inline-flex items-center gap-2 rounded-full border border-[#E8C97A]/45 bg-[#4D1220]/75 backdrop-blur-sm px-6 py-2.5 text-xs sm:text-sm uppercase tracking-[0.22em] text-[#F6E3A8] shadow-[0_6px_24px_rgba(0,0,0,0.35)]"
+          <button
+            type="button"
+            onClick={handleOpen}
+            className="inline-flex flex-col items-center cursor-pointer focus:outline-none"
           >
-            Tap to Open
-          </motion.span>
-        </button>
-      </motion.div>
+            <motion.span
+              animate={{ opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+              className="inline-flex items-center gap-2 rounded-full border border-[#E8C97A]/45 bg-[#4D1220]/75 backdrop-blur-sm px-6 py-2.5 text-xs sm:text-sm uppercase tracking-[0.22em] text-[#F6E3A8] shadow-[0_6px_24px_rgba(0,0,0,0.35)]"
+            >
+              Tap to Open
+            </motion.span>
+          </button>
+        </motion.div>
+      )}
     </motion.div>
   );
 }
