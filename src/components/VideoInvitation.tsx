@@ -34,6 +34,7 @@ function FloralDivider({
 }) {
   const stroke = light ? "rgba(232, 201, 122, 0.5)" : "rgba(155, 110, 44, 0.42)";
   const accent = light ? "#E8C97A" : "#9A6B2F";
+
   return (
     <div
       className={`flex items-center justify-center gap-3 ${
@@ -110,8 +111,8 @@ export default function VideoInvitation({
         return;
       }
 
-      // In video mode, pace the smooth scroll over ~20s (+2s slower)
-      const speedPxPerSec = videoMode ? Math.max(36, maxScroll / 20.0) : 38;
+      // In video mode, pace the smooth scroll over ~23.5s (+3.5s for Warmth & Gratitude card)
+      const speedPxPerSec = videoMode ? Math.max(36, maxScroll / 23.5) : 38;
       virtualY = Math.min(maxScroll, virtualY + speedPxPerSec * dt);
       window.scrollTo({ top: virtualY, behavior: "instant" as ScrollBehavior });
       rafRef.current = window.requestAnimationFrame(step);
@@ -177,6 +178,58 @@ export default function VideoInvitation({
     setIsAutoGlide(true);
     startGlideLoop();
   };
+
+  const warmthCard = (
+    <motion.section
+      initial={isVideoMode ? false : { opacity: 0, y: 22 }}
+      animate={isVideoMode ? { opacity: 1, y: 0 } : undefined}
+      whileInView={isVideoMode ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.65, ease: EASE_CINEMATIC }}
+      className={`relative rounded-[26px] border ${
+        isVideoMode
+          ? "border-[#E8C97A]/40 bg-[linear-gradient(160deg,#642230_0%,#4B1521_100%)] overflow-hidden"
+          : "border-[#E8C97A]/35 bg-[linear-gradient(160deg,rgba(104,36,50,0.96)_0%,rgba(84,26,38,0.97)_100%)]"
+      } px-6 sm:px-8 py-8 text-center shadow-[0_20px_50px_rgba(32,5,11,0.38)] will-change-transform`}
+    >
+      {isVideoMode && (
+        <div className="pointer-events-none absolute inset-2.5 rounded-[18px] border border-[#E8C97A]/22" />
+      )}
+      <div className="relative z-10">
+        <p className="text-[11px] uppercase tracking-[0.26em] text-[#F3D992] font-medium">
+          With Warmth &amp; Gratitude
+        </p>
+        <FloralDivider light />
+        <p className="font-serif-editorial font-medium text-[17px] sm:text-[18px] leading-relaxed text-[#FCF6F7] max-w-[310px] sm:max-w-[340px] mx-auto text-balance">
+          Your presence, love, and heartfelt blessings will make
+          Aarna&apos;s Half Saree Ceremony truly unforgettable.
+        </p>
+
+        {!isVideoMode && (
+          <div className="mt-6 pt-5 border-t border-[#E8C97A]/20 flex flex-col items-center gap-3">
+            <button
+              type="button"
+              onClick={onReplay}
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#E8C97A]/40 bg-[#5C1A28]/70 px-4 py-1.5 text-xs font-medium text-[#F6E3A8] hover:bg-[#6E2031] transition-colors cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Replay Invitation</span>
+            </button>
+
+            <a
+              href="https://www.inviteus.in/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[11px] tracking-[0.12em] text-[#F2DCE0]/75 hover:text-[#F3D992] transition-colors"
+            >
+              Crafted with ♥ by{" "}
+              <span className="underline underline-offset-2">InviteUs</span>
+            </a>
+          </div>
+        )}
+      </div>
+    </motion.section>
+  );
 
   return (
     <motion.div
@@ -312,9 +365,11 @@ export default function VideoInvitation({
               <p className="text-[11.5px] uppercase tracking-[0.24em] text-[#87591D] font-bold">
                 With Love &amp; Blessings of
               </p>
-              <div className="mt-3 font-serif-editorial text-[21px] sm:text-[23px] leading-snug font-bold text-[#4F1522] space-y-1">
+              <div className="mt-2 font-serif-editorial text-[16px] sm:text-[17px] leading-relaxed font-semibold text-[#541925]">
                 <p>Dr. Bachina Chenchu Garataiah</p>
                 <p>Mrs. Ratna Kumari</p>
+                <p className="text-[#9A6826] text-sm my-0.5">&amp;</p>
+                <p>Mr. Krishna - Mrs. Padmavathi</p>
               </div>
             </motion.div>
 
@@ -498,6 +553,9 @@ export default function VideoInvitation({
           </motion.div>
         </motion.section>
 
+        {/* In video mode, render With Warmth & Gratitude as the 3rd card before Venue QR */}
+        {isVideoMode && warmthCard}
+
         {/* ================================================================
             SCENE 3: LOCATION QR CODE & MAP LINK (Image 3)
            ================================================================ */}
@@ -576,45 +634,7 @@ export default function VideoInvitation({
         {/* ================================================================
             SCENE 4: ALL ARE WELCOME & FOOTER (Softened Burgundy Card)
            ================================================================ */}
-        {!isVideoMode && (
-          <motion.section
-            initial={{ opacity: 0, y: 22 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
-            transition={{ duration: 0.65, ease: EASE_CINEMATIC }}
-            className="relative rounded-[26px] border border-[#E8C97A]/35 bg-[linear-gradient(160deg,rgba(104,36,50,0.96)_0%,rgba(84,26,38,0.97)_100%)] px-6 sm:px-8 py-8 text-center shadow-[0_20px_50px_rgba(32,5,11,0.38)] will-change-transform"
-          >
-            <p className="text-[11px] uppercase tracking-[0.26em] text-[#F3D992] font-medium">
-              With Warmth &amp; Gratitude
-            </p>
-            <FloralDivider light />
-            <p className="font-serif-editorial text-[17px] sm:text-[18px] leading-relaxed text-[#F7ECEE]/95 max-w-[310px] sm:max-w-[340px] mx-auto text-balance">
-              Your presence, love, and heartfelt blessings will make
-              Aarna&apos;s Half Saree Ceremony truly unforgettable.
-            </p>
-
-            <div className="mt-6 pt-5 border-t border-[#E8C97A]/20 flex flex-col items-center gap-3">
-              <button
-                type="button"
-                onClick={onReplay}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[#E8C97A]/40 bg-[#5C1A28]/70 px-4 py-1.5 text-xs font-medium text-[#F6E3A8] hover:bg-[#6E2031] transition-colors cursor-pointer"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>Replay Invitation</span>
-              </button>
-
-              <a
-                href="https://www.inviteus.in/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[11px] tracking-[0.12em] text-[#F2DCE0]/75 hover:text-[#F3D992] transition-colors"
-              >
-                Crafted with ♥ by{" "}
-                <span className="underline underline-offset-2">InviteUs</span>
-              </a>
-            </div>
-          </motion.section>
-        )}
+        {!isVideoMode && warmthCard}
       </main>
     </motion.div>
   );
