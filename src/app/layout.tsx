@@ -35,18 +35,26 @@ export const viewport: Viewport = {
   themeColor: "#3D0712",
 };
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "https://aarna.inviteus.in");
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://aarna.inviteus.in"),
+  metadataBase: new URL(siteUrl),
   title: "Aarna's Half Saree Ceremony | Digital Invitation",
   description:
     "With Love & Blessings — Joyfully invite you to celebrate Aarna's Half Saree Ceremony on Sunday, 6 December 2026 at 7:00 PM onwards at Eventara Convention, Hyderabad.",
   alternates: {
-    canonical: "https://aarna.inviteus.in",
+    canonical: "/",
   },
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://aarna.inviteus.in",
+    url: "/",
     siteName: "InviteUs",
     title: "Aarna's Half Saree Ceremony",
     description:
@@ -56,6 +64,7 @@ export const metadata: Metadata = {
         url: "/og-invite.jpg",
         width: 1200,
         height: 630,
+        type: "image/jpeg",
         alt: "Aarna's Half Saree Ceremony — Burgundy Floral Invitation",
       },
     ],
