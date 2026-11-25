@@ -71,13 +71,13 @@ export default function EnvelopeStage({
         transition={{ duration: 0.65, ease: EASE_CINEMATIC }}
         className="relative z-10 text-center mb-7 sm:mb-9"
       >
-        <p className="text-[11px] sm:text-xs uppercase tracking-[0.28em] text-[#E8C97A]/90 font-medium">
+        <p className="text-[11px] sm:text-xs uppercase tracking-[0.28em] text-[#F6E3A8] font-semibold drop-shadow-[0_1px_6px_rgba(0,0,0,0.65)]">
           With Love &amp; Blessings
         </p>
-        <h1 className="font-serif-editorial font-semibold text-4xl sm:text-5xl text-[#FCF8F2] mt-1 tracking-wide drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]">
+        <h1 className="font-serif-editorial font-semibold text-4xl sm:text-5xl text-[#FCF8F2] mt-1 tracking-wide drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)]">
           Aarna&apos;s
         </h1>
-        <p className="font-serif-editorial text-xs sm:text-sm uppercase tracking-[0.24em] text-[#F2DCE0]/90 mt-1">
+        <p className="font-serif-editorial font-semibold text-xs sm:text-sm uppercase tracking-[0.24em] text-[#FCF8F2] mt-1 drop-shadow-[0_1px_8px_rgba(0,0,0,0.65)]">
           Half Saree Ceremony
         </p>
       </motion.div>

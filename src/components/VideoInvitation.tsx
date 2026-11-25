@@ -297,14 +297,12 @@ export default function VideoInvitation({
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25, duration: 0.75, ease: EASE_CINEMATIC }}
             >
-              <p className="text-[11px] uppercase tracking-[0.24em] text-[#9A6826] font-semibold">
+              <p className="text-[11.5px] uppercase tracking-[0.24em] text-[#87591D] font-bold">
                 With Love &amp; Blessings of
               </p>
-              <div className="mt-2 font-serif-editorial text-[16px] sm:text-[17px] leading-relaxed font-semibold text-[#541925]">
+              <div className="mt-3 font-serif-editorial text-[21px] sm:text-[23px] leading-snug font-bold text-[#4F1522] space-y-1">
                 <p>Dr. Bachina Chenchu Garataiah</p>
                 <p>Mrs. Ratna Kumari</p>
-                <p className="text-[#9A6826] text-sm my-0.5">&amp;</p>
-                <p>Mr. Krishna - Mrs. Padmavathi</p>
               </div>
             </motion.div>
 
@@ -567,16 +565,12 @@ export default function VideoInvitation({
             <p className="text-[11px] uppercase tracking-[0.26em] text-[#F3D992] font-medium">
               With Warmth &amp; Gratitude
             </p>
-            <h3 className="font-script-calligraphy font-normal text-[38px] sm:text-[42px] leading-tight text-[#FCF8F2] mt-2 tracking-wide">
+            <h3 className="font-script-calligraphy font-normal text-[44px] sm:text-[50px] leading-tight text-[#FCF8F2] mt-3 mb-2 tracking-wide">
               All Are Welcome
             </h3>
             <FloralDivider light />
-            <p className="font-serif-editorial text-[16px] sm:text-[17px] leading-relaxed text-[#F7ECEE]/95 max-w-[300px] sm:max-w-[330px] mx-auto text-balance">
-              Your presence, love, and heartfelt blessings will make
-              Aarna&apos;s Half Saree Ceremony truly unforgettable.
-            </p>
 
-            <div className="mt-6 pt-5 border-t border-[#E8C97A]/20 flex flex-col items-center gap-3">
+            <div className="mt-5 pt-5 border-t border-[#E8C97A]/20 flex flex-col items-center gap-3">
               <button
                 type="button"
                 onClick={onReplay}
