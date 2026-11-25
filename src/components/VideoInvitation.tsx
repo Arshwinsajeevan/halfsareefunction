@@ -123,12 +123,12 @@ export default function VideoInvitation({
     window.addEventListener("wheel", stopOnUserInteraction, { passive: true });
     window.addEventListener("pointerdown", stopOnUserInteraction, { passive: true });
 
-    // Wait 4s after the opening card's 2.5s text reveal finishes so guests can read it completely
+    // Start smooth auto-glide 4.5s after card opens (2s after the 2.5s text reveal finishes)
     startTimer = window.setTimeout(() => {
       if (autoGlideRef.current) {
         startGlideLoop();
       }
-    }, 6500);
+    }, 4500);
 
     return () => {
       window.clearTimeout(startTimer);
@@ -311,7 +311,7 @@ export default function VideoInvitation({
               transition={{ delay: 0.85, duration: 0.85, ease: EASE_CINEMATIC }}
               className="mt-3"
             >
-              <h2 className="font-script-calligraphy font-normal text-[50px] sm:text-[58px] leading-[1.12] tracking-wide text-[#6B182A]">
+              <h2 className="font-serif-editorial font-semibold text-[42px] sm:text-[48px] leading-[1.12] tracking-wide text-[#6B182A]">
                 Aarna&apos;s
               </h2>
               <p className="font-serif-editorial text-[17px] sm:text-[20px] font-bold tracking-[0.18em] text-[#541925] uppercase mt-1.5">
@@ -457,7 +457,7 @@ export default function VideoInvitation({
 
             <p className="font-serif-editorial text-[17px] sm:text-[18px] text-[#F9EFF1]/95 mt-1.5">
               of our beloved granddaughter{" "}
-              <span className="font-script-calligraphy font-normal text-3xl text-[#F7E5B2] ml-1">
+              <span className="font-serif-editorial font-semibold text-[22px] sm:text-[24px] text-[#F7E5B2] ml-1">
                 Aarna
               </span>
             </p>
@@ -478,7 +478,7 @@ export default function VideoInvitation({
 
           <div className="relative z-10">
             <p className="text-[11px] uppercase tracking-[0.24em] text-[#9A6826] font-semibold">
-              Directions &amp; Venue
+              Venue
             </p>
             <h3 className="font-serif-editorial text-2xl sm:text-[26px] font-bold text-[#541925] mt-1">
               Eventara Convention
@@ -553,7 +553,7 @@ export default function VideoInvitation({
           <p className="font-serif-editorial text-[16px] sm:text-[17px] leading-relaxed text-[#F7ECEE]/95 max-w-sm mx-auto">
             Your presence, love, and heartfelt blessings will make Aarna&apos;s
             Half Saree Ceremony truly unforgettable. We eagerly look forward to
-            celebrating with all our family and friends.
+            celebrating with all our family.
           </p>
 
           <div className="mt-6 pt-5 border-t border-[#E8C97A]/20 flex flex-col items-center gap-3">

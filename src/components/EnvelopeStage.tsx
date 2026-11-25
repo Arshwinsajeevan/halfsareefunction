@@ -67,7 +67,7 @@ export default function EnvelopeStage({
         <p className="text-[11px] sm:text-xs uppercase tracking-[0.28em] text-[#E8C97A]/90 font-medium">
           With Love &amp; Blessings
         </p>
-        <h1 className="font-script-calligraphy font-normal text-4xl sm:text-5xl text-[#FCF8F2] mt-1 tracking-wide drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]">
+        <h1 className="font-serif-editorial font-semibold text-4xl sm:text-5xl text-[#FCF8F2] mt-1 tracking-wide drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]">
           Aarna&apos;s
         </h1>
         <p className="font-serif-editorial text-xs sm:text-sm uppercase tracking-[0.24em] text-[#F2DCE0]/90 mt-1">
@@ -133,7 +133,7 @@ export default function EnvelopeStage({
               <span className="text-[9px] uppercase tracking-[0.26em] text-[#9E6F2B]">
                 Cordially Invited
               </span>
-              <span className="font-script-calligraphy font-normal text-3xl text-[#5E1927] leading-tight mt-0.5">
+              <span className="font-serif-editorial font-semibold text-2xl text-[#5E1927] leading-tight mt-0.5">
                 Aarna&apos;s
               </span>
               <span className="font-serif-editorial text-[11px] uppercase tracking-[0.2em] text-[#4A0A17] font-semibold">
