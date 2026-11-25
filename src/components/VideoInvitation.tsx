@@ -565,12 +565,13 @@ export default function VideoInvitation({
             <p className="text-[11px] uppercase tracking-[0.26em] text-[#F3D992] font-medium">
               With Warmth &amp; Gratitude
             </p>
-            <h3 className="font-script-calligraphy font-normal text-[44px] sm:text-[50px] leading-tight text-[#FCF8F2] mt-3 mb-2 tracking-wide">
-              All Are Welcome
-            </h3>
             <FloralDivider light />
+            <p className="font-serif-editorial text-[17px] sm:text-[18px] leading-relaxed text-[#F7ECEE]/95 max-w-[310px] sm:max-w-[340px] mx-auto text-balance">
+              Your presence, love, and heartfelt blessings will make
+              Aarna&apos;s Half Saree Ceremony truly unforgettable.
+            </p>
 
-            <div className="mt-5 pt-5 border-t border-[#E8C97A]/20 flex flex-col items-center gap-3">
+            <div className="mt-6 pt-5 border-t border-[#E8C97A]/20 flex flex-col items-center gap-3">
               <button
                 type="button"
                 onClick={onReplay}
