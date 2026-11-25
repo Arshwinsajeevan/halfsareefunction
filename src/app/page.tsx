@@ -68,7 +68,7 @@ export default function Home() {
   };
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence>
       {!opened ? (
         <EnvelopeStage
           key="envelope"

@@ -25,11 +25,21 @@ const EASE_CINEMATIC: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const MAP_URL = "https://maps.app.goo.gl/Z5RJub9TTYSAPntu9";
 const RSVP_PHONE = "9972563679";
 
-function FloralDivider({ light = false }: { light?: boolean }) {
+function FloralDivider({
+  light = false,
+  compact = false,
+}: {
+  light?: boolean;
+  compact?: boolean;
+}) {
   const stroke = light ? "rgba(232, 201, 122, 0.5)" : "rgba(155, 110, 44, 0.42)";
   const accent = light ? "#E8C97A" : "#9A6B2F";
   return (
-    <div className="flex items-center justify-center gap-3 my-4 sm:my-5">
+    <div
+      className={`flex items-center justify-center gap-3 ${
+        compact ? "my-2.5" : "my-4 sm:my-5"
+      }`}
+    >
       <span
         className="h-px w-12 sm:w-16"
         style={{
@@ -100,8 +110,8 @@ export default function VideoInvitation({
         return;
       }
 
-      // In video mode, pace the scroll over ~20s so total video hits ~30s cleanly
-      const speedPxPerSec = videoMode ? Math.max(38, maxScroll / 20.0) : 38;
+      // In video mode, pace the smooth scroll over ~20s (+2s slower)
+      const speedPxPerSec = videoMode ? Math.max(36, maxScroll / 20.0) : 38;
       virtualY = Math.min(maxScroll, virtualY + speedPxPerSec * dt);
       window.scrollTo({ top: virtualY, behavior: "instant" as ScrollBehavior });
       rafRef.current = window.requestAnimationFrame(step);
@@ -133,12 +143,12 @@ export default function VideoInvitation({
     window.addEventListener("wheel", stopOnUserInteraction, { passive: true });
     window.addEventListener("pointerdown", stopOnUserInteraction, { passive: true });
 
-    // Start smooth auto-glide 4.5s after card opens (small pause to read Card 1 from top)
+    // In video mode, wait 5.5s (full ~3s reading pause after text finishes) before scrolling
     startTimer = window.setTimeout(() => {
       if (autoGlideRef.current) {
         startGlideLoop(videoParam);
       }
-    }, 4500);
+    }, videoParam ? 5500 : 4500);
 
     return () => {
       window.clearTimeout(startTimer);
@@ -171,9 +181,9 @@ export default function VideoInvitation({
   return (
     <motion.div
       key="video-invitation"
-      initial={{ opacity: 0 }}
+      initial={false}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.85, ease: EASE_CINEMATIC }}
+      transition={{ duration: 0.5, ease: EASE_CINEMATIC }}
       className="relative min-h-[100dvh] w-full overflow-x-hidden"
     >
       {/* Fixed Burgundy Peony Theme Backdrop with softened contrast */}
@@ -253,7 +263,7 @@ export default function VideoInvitation({
 
       {/* Main Centered Mobile-First Editorial Column */}
       <main
-        className={`relative mx-auto w-full max-w-[460px] px-4 pt-6 space-y-8 sm:space-y-10 ${
+        className={`relative mx-auto w-full max-w-[432px] sm:max-w-[460px] px-4 pt-6 space-y-8 sm:space-y-10 ${
           isVideoMode ? "pb-10" : "pb-24"
         }`}
       >
@@ -261,19 +271,21 @@ export default function VideoInvitation({
             SCENE 1: MAIN INVITATION DETAILS (Recreated cleanly from Image 1)
            ================================================================ */}
         <motion.section
-          initial={{ opacity: 0, y: 28, scale: 0.97 }}
+          initial={{ opacity: 0, y: 20, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.95, ease: EASE_CINEMATIC }}
-          className="relative rounded-[28px] bg-[#FCF8F2]/94 paper-grain text-[#5C1C29] px-5 sm:px-7 py-6 sm:py-7 shadow-[0_22px_60px_rgba(32,5,11,0.45)] border-2 border-[#D4AF37]/70 overflow-hidden"
+          transition={{ duration: isVideoMode ? 0.5 : 0.95, ease: EASE_CINEMATIC }}
+          className={`relative rounded-[28px] ${
+            isVideoMode ? "bg-[#FCF8F2]" : "bg-[#FCF8F2]/94 paper-grain"
+          } text-[#4A111D] px-5 sm:px-7 py-6 sm:py-7 shadow-[0_22px_60px_rgba(32,5,11,0.45)] border-2 border-[#D4AF37]/75 overflow-hidden`}
         >
           {/* Inner hairline ornamental border */}
           <div className="pointer-events-none absolute inset-2.5 rounded-[20px] border border-[#7C2939]/22" />
 
           {/* Top Botanical Header in Layout Flow (Zero overlap with text) */}
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={isVideoMode ? { opacity: 0 } : { opacity: 0, y: -10 }}
             animate={{ opacity: 0.95, y: 0 }}
-            transition={{ delay: 0.15, duration: 0.9, ease: EASE_CINEMATIC }}
+            transition={{ delay: isVideoMode ? 0.05 : 0.15, duration: isVideoMode ? 0.45 : 0.9, ease: EASE_CINEMATIC }}
             className="relative z-10 flex items-start justify-between pointer-events-none select-none -mx-1 mb-2"
           >
             <img
@@ -293,9 +305,9 @@ export default function VideoInvitation({
           {/* Choreographed Video-Title Text Reveals */}
           <div className="relative z-10 text-center px-1">
             <motion.div
-              initial={{ opacity: 0, y: 14 }}
+              initial={isVideoMode ? { opacity: 0 } : { opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25, duration: 0.75, ease: EASE_CINEMATIC }}
+              transition={{ delay: isVideoMode ? 0.1 : 0.25, duration: isVideoMode ? 0.45 : 0.75, ease: EASE_CINEMATIC }}
             >
               <p className="text-[11.5px] uppercase tracking-[0.24em] text-[#87591D] font-bold">
                 With Love &amp; Blessings of
@@ -307,9 +319,9 @@ export default function VideoInvitation({
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 14 }}
+              initial={isVideoMode ? { opacity: 0 } : { opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.55, duration: 0.75, ease: EASE_CINEMATIC }}
+              transition={{ delay: isVideoMode ? 0.28 : 0.55, duration: isVideoMode ? 0.45 : 0.75, ease: EASE_CINEMATIC }}
               className="mt-4"
             >
               <p className="font-serif-editorial italic text-[16px] sm:text-[17px] text-[#6B2734] leading-snug">
@@ -320,9 +332,9 @@ export default function VideoInvitation({
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.94, y: 14 }}
+              initial={isVideoMode ? { opacity: 0 } : { opacity: 0, scale: 0.94, y: 14 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ delay: 0.85, duration: 0.85, ease: EASE_CINEMATIC }}
+              transition={{ delay: isVideoMode ? 0.45 : 0.85, duration: isVideoMode ? 0.5 : 0.85, ease: EASE_CINEMATIC }}
               className="mt-3"
             >
               <h2 className="font-serif-editorial font-semibold text-[42px] sm:text-[48px] leading-[1.12] tracking-wide text-[#6B182A]">
@@ -334,9 +346,9 @@ export default function VideoInvitation({
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
+              initial={isVideoMode ? { opacity: 0 } : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.15, duration: 0.75, ease: EASE_CINEMATIC }}
+              transition={{ delay: isVideoMode ? 0.65 : 1.15, duration: isVideoMode ? 0.45 : 0.75, ease: EASE_CINEMATIC }}
               className="mt-3.5"
             >
               <p className="text-[11px] uppercase tracking-[0.2em] text-[#9A6826] font-medium">
@@ -353,9 +365,9 @@ export default function VideoInvitation({
 
             {/* Date & Time Highlight */}
             <motion.div
-              initial={{ opacity: 0, y: 14 }}
+              initial={isVideoMode ? { opacity: 0 } : { opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.45, duration: 0.75, ease: EASE_CINEMATIC }}
+              transition={{ delay: isVideoMode ? 0.55 : 1.45, duration: isVideoMode ? 0.45 : 0.75, ease: EASE_CINEMATIC }}
             >
               <div className="inline-flex items-center justify-center gap-3 sm:gap-4 font-serif-editorial text-[#5E1B29]">
                 <span className="text-sm sm:text-base font-bold tracking-[0.16em] uppercase">
@@ -385,9 +397,9 @@ export default function VideoInvitation({
 
             {/* Venue & Plain RSVP Text */}
             <motion.div
-              initial={{ opacity: 0, y: 14 }}
+              initial={isVideoMode ? { opacity: 0 } : { opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.75, duration: 0.75, ease: EASE_CINEMATIC }}
+              transition={{ delay: isVideoMode ? 0.65 : 1.75, duration: isVideoMode ? 0.45 : 0.75, ease: EASE_CINEMATIC }}
               className="space-y-2.5"
             >
               <div>
@@ -436,17 +448,23 @@ export default function VideoInvitation({
             SCENE 2: SECONDARY DETAILS (Image 2 — Softened Burgundy Card)
            ================================================================ */}
         <motion.section
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={isVideoMode ? false : { opacity: 0, y: 24 }}
+          animate={isVideoMode ? { opacity: 1, y: 0 } : undefined}
+          whileInView={isVideoMode ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.7, ease: EASE_CINEMATIC }}
-          className="relative rounded-[26px] border border-[#E8C97A]/40 bg-[linear-gradient(160deg,rgba(104,36,50,0.96)_0%,rgba(84,26,38,0.97)_100%)] px-6 sm:px-8 py-9 sm:py-10 text-center shadow-[0_20px_50px_rgba(32,5,11,0.38)] overflow-hidden will-change-transform"
+          className={`relative rounded-[26px] border border-[#E8C97A]/40 ${
+            isVideoMode
+              ? "bg-[linear-gradient(160deg,#642230_0%,#4B1521_100%)]"
+              : "bg-[linear-gradient(160deg,rgba(104,36,50,0.96)_0%,rgba(84,26,38,0.97)_100%)]"
+          } px-6 sm:px-8 py-9 sm:py-10 text-center shadow-[0_20px_50px_rgba(32,5,11,0.38)] overflow-hidden will-change-transform`}
         >
           <div className="pointer-events-none absolute inset-2.5 rounded-[18px] border border-[#E8C97A]/22" />
 
           <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={isVideoMode ? false : { opacity: 0, y: 18 }}
+            animate={isVideoMode ? { opacity: 1, y: 0 } : undefined}
+            whileInView={isVideoMode ? undefined : { opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.35 }}
             transition={{ delay: 0.12, duration: 0.75, ease: EASE_CINEMATIC }}
             className="relative z-10"
@@ -484,11 +502,14 @@ export default function VideoInvitation({
             SCENE 3: LOCATION QR CODE & MAP LINK (Image 3)
            ================================================================ */}
         <motion.section
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={isVideoMode ? false : { opacity: 0, y: 24 }}
+          animate={isVideoMode ? { opacity: 1, y: 0 } : undefined}
+          whileInView={isVideoMode ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.7, ease: EASE_CINEMATIC }}
-          className="relative rounded-[26px] bg-[#FCF8F2]/94 paper-grain text-[#5C1C29] border-2 border-[#D4AF37]/70 px-6 sm:px-8 py-9 text-center shadow-[0_20px_50px_rgba(32,5,11,0.38)] overflow-hidden will-change-transform"
+          className={`relative rounded-[26px] ${
+            isVideoMode ? "bg-[#FCF8F2]" : "bg-[#FCF8F2]/94 paper-grain"
+          } text-[#4A111D] border-2 border-[#D4AF37]/75 px-6 sm:px-8 py-9 text-center shadow-[0_20px_50px_rgba(32,5,11,0.38)] overflow-hidden will-change-transform`}
         >
           <div className="pointer-events-none absolute inset-2.5 rounded-[18px] border border-[#7C2939]/20" />
 
@@ -505,8 +526,9 @@ export default function VideoInvitation({
 
             {/* Clean Scannable QR Code */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.92 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={isVideoMode ? false : { opacity: 0, scale: 0.92 }}
+              animate={isVideoMode ? { opacity: 1, scale: 1 } : undefined}
+              whileInView={isVideoMode ? undefined : { opacity: 1, scale: 1 }}
               viewport={{ once: true, amount: 0.4 }}
               transition={{ delay: 0.15, duration: 0.75, ease: EASE_CINEMATIC }}
               className="mt-5 inline-flex flex-col items-center rounded-2xl border border-[#D4AF37]/50 bg-white p-4 shadow-[0_10px_28px_rgba(74,10,23,0.07)]"

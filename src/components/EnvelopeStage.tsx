@@ -37,9 +37,9 @@ export default function EnvelopeStage({
       key="envelope-stage"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 1.03 }}
-      transition={{ duration: 0.7, ease: EASE_CINEMATIC }}
-      className="relative min-h-[100dvh] w-full flex flex-col items-center justify-center px-5 py-8 overflow-hidden select-none"
+      exit={{ opacity: 0, scale: 1.02 }}
+      transition={{ duration: 0.55, ease: EASE_CINEMATIC }}
+      className="fixed inset-0 z-50 w-full flex flex-col items-center justify-center px-5 py-8 overflow-hidden select-none"
     >
       {/* Burgundy floral backdrop matching Image 4 & Image 5 mood */}
       <div
