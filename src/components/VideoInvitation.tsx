@@ -365,11 +365,9 @@ export default function VideoInvitation({
               <p className="text-[11.5px] uppercase tracking-[0.24em] text-[#87591D] font-bold">
                 With Love &amp; Blessings of
               </p>
-              <div className="mt-2 font-serif-editorial text-[16px] sm:text-[17px] leading-relaxed font-semibold text-[#541925]">
+              <div className="mt-3 font-serif-editorial text-[21px] sm:text-[23px] leading-snug font-bold text-[#4F1522] space-y-1">
                 <p>Dr. Bachina Chenchu Garataiah</p>
                 <p>Mrs. Ratna Kumari</p>
-                <p className="text-[#9A6826] text-sm my-0.5">&amp;</p>
-                <p>Mr. Krishna - Mrs. Padmavathi</p>
               </div>
             </motion.div>
 

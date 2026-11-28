@@ -12,7 +12,7 @@ export default function Home() {
   const fadeIntervalRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const audio = new Audio("/audio/ceremony-melody.wav");
+    const audio = new Audio("/audio/cinematic-piano-ambient.mp3");
     audio.loop = true;
     audio.preload = "auto";
     audio.volume = 0;
